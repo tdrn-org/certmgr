@@ -40,17 +40,18 @@ type Entries struct {
 }
 
 type Entry struct {
-	Name      string   `json:"name"`
-	DN        string   `json:"dn"`
-	Serial    *big.Int `json:"serial"`
-	KeyType   string   `json:"keyType"`
-	Key       bool     `json:"key"`
-	CRT       bool     `json:"crt"`
-	CSR       bool     `json:"csr"`
-	CRL       bool     `json:"crl"`
-	CA        bool     `json:"ca"`
-	ValidFrom string   `json:"validFrom"`
-	ValidTo   string   `json:"validTo"`
+	Name      string        `json:"name"`
+	DN        string        `json:"dn"`
+	Serial    *big.Int      `json:"serial"`
+	KeyType   string        `json:"keyType"`
+	Key       bool          `json:"key"`
+	CRT       bool          `json:"crt"`
+	CSR       bool          `json:"csr"`
+	CRL       bool          `json:"crl"`
+	CA        bool          `json:"ca"`
+	ValidFrom string        `json:"validFrom"`
+	ValidTo   string        `json:"validTo"`
+	KeyUsage  x509.KeyUsage `json:"keyUsage"`
 }
 
 func newEntry(entry *certstore.RegistryEntry) *Entry {
@@ -308,6 +309,7 @@ func populateEntry(apiEntry *Entry, registryEntry *certstore.RegistryEntry) *Ent
 		apiEntry.CA = certificate.BasicConstraintsValid && certificate.IsCA
 		apiEntry.ValidFrom = certificate.NotBefore.Format(time.RFC3339)
 		apiEntry.ValidTo = certificate.NotAfter.Format(time.RFC3339)
+		apiEntry.KeyUsage = certificate.KeyUsage
 	} else if apiEntry.CSR {
 		certificateRequest := registryEntry.CertificateRequest()
 		apiEntry.DN = certificateRequest.Subject.String()

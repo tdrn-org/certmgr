@@ -1,4 +1,4 @@
-import { KeyUsageSpec, BasicConstraintsSpec, ExtKeyUsageSpec } from "./api";
+import { KeyUsageSpec, BasicConstraintsSpec, ExtKeyUsageSpec, Entry } from "./api";
 
 function checkValidTo(date: Date): 'valid' | 'expiring' | 'expired' {
     const now = Date.now();
@@ -66,48 +66,58 @@ export class KeyUsage {
     encipherOnly: boolean = false;
     decipherOnly: boolean = false;
 
+    fromFlag(flag: number) {
+        this.digitalSignature = (flag & KeyUsageFlag.DigitalSignature) != 0;
+        this.contentCommitment = (flag & KeyUsageFlag.ContentCommitment) != 0;
+        this.keyEncipherment = (flag & KeyUsageFlag.KeyEncipherment) != 0;
+        this.dataEncipherment = (flag & KeyUsageFlag.DataEncipherment) != 0;
+        this.keyAgreement = (flag & KeyUsageFlag.KeyAgreement) != 0;
+        this.keyCertSign = (flag & KeyUsageFlag.KeyCertSign) != 0;
+        this.crlSign = (flag & KeyUsageFlag.CRLSign) != 0;
+        this.encipherOnly = (flag & KeyUsageFlag.EncipherOnly) != 0;
+        this.decipherOnly = (flag & KeyUsageFlag.DecipherOnly) != 0;
+    }
+
     fromSpec(spec: KeyUsageSpec) {
-        this.digitalSignature = (spec.keyUsage & KeyUsageFlag.DigitalSignature) != 0;
-        this.contentCommitment = (spec.keyUsage & KeyUsageFlag.ContentCommitment) != 0;
-        this.keyEncipherment = (spec.keyUsage & KeyUsageFlag.KeyEncipherment) != 0;
-        this.dataEncipherment = (spec.keyUsage & KeyUsageFlag.DataEncipherment) != 0;
-        this.keyAgreement = (spec.keyUsage & KeyUsageFlag.KeyAgreement) != 0;
-        this.keyCertSign = (spec.keyUsage & KeyUsageFlag.KeyCertSign) != 0;
-        this.crlSign = (spec.keyUsage & KeyUsageFlag.CRLSign) != 0;
-        this.encipherOnly = (spec.keyUsage & KeyUsageFlag.EncipherOnly) != 0;
-        this.decipherOnly = (spec.keyUsage & KeyUsageFlag.DecipherOnly) != 0;
+        this.fromFlag(spec.keyUsage)
+    }
+
+    toFlag(): number {
+        let flag: number = 0;
+        if (this.digitalSignature) {
+            flag |= KeyUsageFlag.DigitalSignature;
+        }
+        if (this.contentCommitment) {
+            flag |= KeyUsageFlag.ContentCommitment;
+        }
+        if (this.keyEncipherment) {
+            flag |= KeyUsageFlag.KeyEncipherment;
+        }
+        if (this.dataEncipherment) {
+            flag |= KeyUsageFlag.DataEncipherment;
+        }
+        if (this.keyAgreement) {
+            flag |= KeyUsageFlag.KeyAgreement;
+        }
+        if (this.keyCertSign) {
+            flag |= KeyUsageFlag.KeyCertSign;
+        }
+        if (this.crlSign) {
+            flag |= KeyUsageFlag.CRLSign;
+        }
+        if (this.encipherOnly) {
+            flag |= KeyUsageFlag.EncipherOnly;
+        }
+        if (this.decipherOnly) {
+            flag |= KeyUsageFlag.DecipherOnly;
+        }
+        return flag;
     }
 
     toSpec(): KeyUsageSpec {
         let spec = new KeyUsageSpec();
         spec.enabled = true;
-        if (this.digitalSignature) {
-            spec.keyUsage |= KeyUsageFlag.DigitalSignature;
-        }
-        if (this.contentCommitment) {
-            spec.keyUsage |= KeyUsageFlag.ContentCommitment;
-        }
-        if (this.keyEncipherment) {
-            spec.keyUsage |= KeyUsageFlag.KeyEncipherment;
-        }
-        if (this.dataEncipherment) {
-            spec.keyUsage |= KeyUsageFlag.DataEncipherment;
-        }
-        if (this.keyAgreement) {
-            spec.keyUsage |= KeyUsageFlag.KeyAgreement;
-        }
-        if (this.keyCertSign) {
-            spec.keyUsage |= KeyUsageFlag.KeyCertSign;
-        }
-        if (this.crlSign) {
-            spec.keyUsage |= KeyUsageFlag.CRLSign;
-        }
-        if (this.encipherOnly) {
-            spec.keyUsage |= KeyUsageFlag.EncipherOnly;
-        }
-        if (this.decipherOnly) {
-            spec.keyUsage |= KeyUsageFlag.DecipherOnly;
-        }
+        spec.keyUsage = this.toFlag();
         return spec;
     }
 }

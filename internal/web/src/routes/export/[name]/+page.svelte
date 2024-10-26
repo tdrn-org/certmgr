@@ -1,30 +1,36 @@
 <script lang="ts">
-	import NavDrawer from '$lib/components/navdrawer.svelte';
-	import { Breadcrumb, BreadcrumbItem, Button, DarkMode } from 'flowbite-svelte';
-	import { BarsOutline } from 'flowbite-svelte-icons';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import MainNavBar from '$lib/components/mainnavbar.svelte';
+	import api, { EntryDetails } from '$lib/api';
+	import { Button, Heading, Secondary } from 'flowbite-svelte';
 
-	const base: string = "../..";
+	const base: string = '../..';
 
-	let navHidden: boolean;
+	let entryName: string;
+	let entryDetails: EntryDetails;
 
-	let exportName: string;
+	$: entryName = $page.params['name'];
 
-	$: exportName = $page.params['name'];
+	onMount(() => {
+		api.details.get(base, entryName).then((response) => {
+			entryDetails = response;
+		});
+	});
+
+	function onExport() {
+		goto(base);
+	}
 </script>
 
-<Breadcrumb aria-label="Export certificate" solid>
-	<Button color="alternative" size="xs" on:click={() => (navHidden = false)}
-		><BarsOutline size="xs" /></Button
-	>
-	<BreadcrumbItem href="{base}" home>
-		<svelte:fragment slot="icon">
-			<img src="{base}/images/certmgr.svg" class="me-3 h-6 sm:h-9" alt="CertMgr Logo" />
-		</svelte:fragment>CertMgr</BreadcrumbItem
-	>
-	<BreadcrumbItem>Export certificate</BreadcrumbItem>
-	<div class="absolute right-2">
-		<DarkMode />
+<MainNavBar {base} />
+<div class="p-8">
+	<div class="mb-6">
+		<Heading tag="h3"><Secondary>Export</Secondary> {entryName}</Heading>
 	</div>
-</Breadcrumb>
-<NavDrawer base="{base}" bind:hidden={navHidden} />
+	<div class="mb-6">
+		<Button class="mt-8" size="sm" href={base}>Export</Button>
+		<Button class="mt-8" color="light" size="sm" on:click={onExport}>Cancel</Button>
+	</div>
+</div>

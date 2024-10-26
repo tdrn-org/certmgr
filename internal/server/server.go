@@ -117,6 +117,7 @@ func (server *serverInstance) setupRouter(prefix string) (*gin.Engine, error) {
 	router.GET(prefix+"/api/entries", server.entries)
 	router.GET(prefix+"/api/details/:name", server.details)
 	router.DELETE(prefix+"/api/delete/:name", server.delete)
+	router.GET(prefix+"/api/export/:name", server.export)
 	router.GET(prefix+"/api/cas", server.cas)
 	router.GET(prefix+"/api/issuers", server.issuers)
 	router.PUT(prefix+"/api/generate/local", server.generateLocal)

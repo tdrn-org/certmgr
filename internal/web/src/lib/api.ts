@@ -42,6 +42,7 @@ export class Entry {
 	ca: boolean = false;
 	validFrom: string = "";
 	validTo: string = "";
+	keyUsage: number = 0;
 }
 
 const entries = {

@@ -7,16 +7,13 @@
 		Toggle,
 		Modal,
 		Spinner,
-		Breadcrumb,
-		BreadcrumbItem,
-		DarkMode,
 		type SelectOptionType
 	} from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import api, { GenerateAcme, GenerateLocal, GenerateRemote } from '$lib/api';
 	import certs, { BasicConstraints, ExtKeyUsage, KeyUsage, KeyUsageFlag } from '$lib/certs';
 	import ui from '$lib/ui';
-	import NavDrawer from '$lib/components/navdrawer.svelte';
+	import MainNavBar from '$lib/components/mainnavbar.svelte';
 	import NameInput from '$lib/components/nameinput.svelte';
 	import CaInput from '$lib/components/cainput.svelte';
 	import DnInput from '$lib/components/dninput.svelte';
@@ -27,9 +24,8 @@
 	import ExtKeyUsageInput from '$lib/components/extkeyusageinput.svelte';
 	import BasicConstraintInput from '$lib/components/basicconstraintsinput.svelte';
 	import DomainsInput from '$lib/components/domainsinput.svelte';
-	import { BarsOutline } from 'flowbite-svelte-icons';
 
-	let navHidden: boolean;
+	const base: string = '..';
 
 	// Global options
 	let generating: boolean = false;
@@ -134,9 +130,9 @@
 		generate.ca = selectedCa.trim();
 		generate.dn = selectedRemoteDn.trim();
 		generate.keyType = selectedRemoteKeyType.trim();
-		api.generateRemote.put('..', generate).then((response) => {
+		api.generateRemote.put(base, generate).then((response) => {
 			generating = false;
-			goto('..');
+			goto(base);
 		});
 	}
 
@@ -152,18 +148,18 @@
 		generate.ca = selectedCa.trim();
 		generate.domains = selectedAcmeDomains.split(',').map((domain) => domain.trim());
 		generate.keyType = selectedAcmeKeyType.trim();
-		api.generateAcme.put('..', generate).then((response) => {
+		api.generateAcme.put(base, generate).then((response) => {
 			generating = false;
-			goto('..');
+			goto(base);
 		});
 	}
 
 	function onCancel() {
-		goto('..');
+		goto(base);
 	}
 
 	onMount(() => {
-		api.cas.get('..').then((response) => {
+		api.cas.get(base).then((response) => {
 			cas = response.cas.map((ca) => {
 				return { name: ca.name, value: ca.name };
 			});
@@ -176,21 +172,7 @@
 	});
 </script>
 
-<Breadcrumb aria-label="New certificate" solid>
-	<Button color="alternative" size="xs" on:click={() => (navHidden = false)}
-		><BarsOutline size="xs" /></Button
-	>
-	<BreadcrumbItem href=".." home>
-		<svelte:fragment slot="icon">
-			<img src="../images/certmgr.svg" class="me-3 h-6 sm:h-9" alt="CertMgr Logo" />
-		</svelte:fragment>CertMgr</BreadcrumbItem
-	>
-	<BreadcrumbItem>New certificate</BreadcrumbItem>
-	<div class="absolute right-2">
-		<DarkMode />
-	</div>
-</Breadcrumb>
-<NavDrawer base=".." bind:hidden={navHidden} />
+<MainNavBar {base} />
 <div class="p-8">
 	<div class="mb-6">
 		<NameInput bind:name={selectedName} bind:valid={selectedNameValid} />
@@ -264,8 +246,8 @@
 		/>
 	{/if}
 	<div class="mb-6">
-		<Button type="submit" on:click={onGenerate}>Generate</Button>
-		<Button color="alternative" on:click={onCancel}>Cancel</Button>
+		<Button type="submit" size="sm" on:click={onGenerate}>Generate</Button>
+		<Button color="alternative" size="sm" border on:click={onCancel}>Cancel</Button>
 	</div>
 </div>
 <Modal title="Generating..." bind:open={generating}>

@@ -13,7 +13,7 @@
 	import { sineIn } from 'svelte/easing';
 	import {
 		CirclePlusOutline,
-		FileCirclePlusOutline,
+		FileImportOutline,
 		HomeOutline,
 		InfoCircleOutline
 	} from 'flowbite-svelte-icons';
@@ -61,7 +61,7 @@
 				</SidebarItem>
 				<SidebarItem label="Import certificate(s)" href="{importUrl}">
 					<svelte:fragment slot="icon">
-						<FileCirclePlusOutline
+						<FileImportOutline
 							class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-800 dark:text-gray-400 dark:group-hover:text-white"
 						/>
 					</svelte:fragment>

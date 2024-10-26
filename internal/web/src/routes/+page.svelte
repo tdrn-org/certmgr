@@ -1,38 +1,24 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { A, Alert, Button, Badge, Card, Dropdown, DropdownItem, DropdownDivider, Modal } from 'flowbite-svelte';
 	import {
-		Button,
-		Table,
-		TableHead,
-		TableHeadCell,
-		TableBodyRow,
-		TableBodyCell,
-		Badge,
-		TableBody,
-		Breadcrumb,
-		BreadcrumbItem,
-		DarkMode,
-		Dropdown,
-		DropdownItem,
-		A
-	} from 'flowbite-svelte';
-	import { BarsOutline, DotsVerticalOutline } from 'flowbite-svelte-icons';
+		DotsHorizontalOutline,
+		InfoCircleOutline,
+		FileExportOutline,
+		TrashBinOutline
+	} from 'flowbite-svelte-icons';
 	import { goto } from '$app/navigation';
-	import NavDrawer from '$lib/components/navdrawer.svelte';
-	import EntryDetailsModal from '$lib/components/entrydetailsmodal.svelte';
-	import api, { Entries, EntriesFilter, EntryDetails } from '$lib/api';
+	import api, { Entries, EntriesFilter } from '$lib/api';
 	import certs from '$lib/certs';
 	import ui from '$lib/ui';
-	import { applyAction } from '$app/forms';
+	import MainNavBar from '$lib/components/mainnavbar.svelte';
 
 	const base: string = '.';
 
-	let navHidden = true;
+	let deleteName: string = '';
+	let confirmDeleteModal: boolean = false
 
 	let entries: Entries = new Entries();
-
-	let entryDetails: EntryDetails = new EntryDetails();
-	let openDetails: boolean = false;
 
 	onMount(() => {
 		reload();
@@ -46,26 +32,25 @@
 			entries = response;
 		});
 	}
-
 	function onDetails(name: string) {
-		api.details.get(base, name).then((response) => {
-			entryDetails = response;
-			openDetails = true;
-		});
+		goto(base + '/details/' + name);
 	}
-	
 	function onExport(name: string) {
 		goto(base + '/export/' + name);
 	}
-
-
-	function onDelete(name: string) {
-		api.del.delete(base, name).then((response) => {
+	function onConfirmDelete(name: string) {
+		deleteName = name;
+		confirmDeleteModal = true;
+	}
+	function onCancelDelete() {
+		confirmDeleteModal = false;
+	}
+	function onDelete() {
+		confirmDeleteModal = false;
+		api.del.delete(base, deleteName).then((response) => {
 			reload();
-			goto(base);
 		});
 	}
-
 	function expiryColor(date: Date): 'red' | 'yellow' | 'none' {
 		switch (certs.checkValidTo(date)) {
 			case 'expired':
@@ -78,71 +63,68 @@
 	}
 </script>
 
-<Breadcrumb aria-label="Certificates" solid>
-	<Button color="alternative" size="xs" on:click={() => (navHidden = false)}
-		><BarsOutline size="xs" /></Button
-	>
-	<BreadcrumbItem href="{base}" home>
-		<svelte:fragment slot="icon">
-			<img src="./images/certmgr.svg" class="me-3 h-6 sm:h-9" alt="CertMgr Logo" />
-		</svelte:fragment>CertMgr</BreadcrumbItem
-	>
-	<div class="absolute right-2">
-		<DarkMode />
-	</div>
-</Breadcrumb>
-<NavDrawer base="{base}" bind:hidden={navHidden} />
-<div class="flex-auto overflow-scroll">
-	<Table>
-		<TableHead>
-			<TableHeadCell>&nbsp;</TableHeadCell>
-			<TableHeadCell>Name</TableHeadCell>
-			<TableHeadCell>Type</TableHeadCell>
-			<TableHeadCell>DN</TableHeadCell>
-			<TableHeadCell>Serial</TableHeadCell>
-			<TableHeadCell>Expires</TableHeadCell>
-		</TableHead>
-		<TableBody>
-			{#each entries.entries as entry, entryIndex}
-				<TableBodyRow>
-					<TableBodyCell>
-						<DotsVerticalOutline class="dots-menu{entryIndex} dark:text-white" />
-						<Dropdown placement="right" triggeredBy=".dots-menu{entryIndex}">
-							<DropdownItem on:click={() => onDetails(entry.name)}>Details</DropdownItem>
-							<DropdownItem on:click={() => onExport(entry.name)}>Export</DropdownItem>
-							<DropdownItem on:click={() => onDelete(entry.name)}>Delete</DropdownItem>
-						</Dropdown>
-					</TableBodyCell>
-					<TableBodyCell on:click={() => onDetails(entry.name)}>{entry.name}</TableBodyCell>
-					<TableBodyCell>
-						{#if entry.key}
-							<Badge color="green">Key</Badge>
-						{/if}
-						{#if entry.crt}
-							<Badge color="dark">CRT</Badge>
-						{/if}
-						{#if entry.csr}
-							<Badge color="indigo">CSR</Badge>
-						{/if}
-						{#if entry.crl}
-							<Badge color="yellow">CRL</Badge>
-						{/if}
-						{#if entry.ca}
-							<Badge>CA</Badge>
-						{/if}
-					</TableBodyCell>
-					<TableBodyCell>{entry.dn}</TableBodyCell>
-					<TableBodyCell>{entry.serial}</TableBodyCell>
-					<TableBodyCell>
-						{#if entry.crt}
-							<Badge color={expiryColor(new Date(entry.validTo))}
-								>{ui.dateTimeFormat.format(new Date(entry.validTo))}</Badge
-							>
-						{/if}
-					</TableBodyCell>
-				</TableBodyRow>
-			{/each}
-		</TableBody>
-	</Table>
+<MainNavBar {base} />
+<div class="mt-10 flex flex-wrap justify-center gap-4">
+	{#if entries.entries.length == 0}
+	<Alert color="dark" border>
+		<span class="font-medium">Empty store!</span>
+		Select <A href="{base}/new">New</A> or <A href="{base}/import">Import</A> to add certificates.
+	</Alert>
+	{/if}
+	{#each entries.entries as entry, entryIndex}
+		<Card>
+			<div class="flex justify-between">
+				<h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{entry.name}</h5>
+				<DotsHorizontalOutline />
+				<Dropdown class="w-36">
+					<DropdownItem class="flex gap-2" on:click={() => onDetails(entry.name)}
+						><InfoCircleOutline size="sm" /> Details</DropdownItem
+					>
+					<DropdownItem class="flex gap-2" on:click={() => onExport(entry.name)}
+						><FileExportOutline size="sm" /> Export</DropdownItem
+					>
+					<DropdownDivider />
+					<DropdownItem class="flex gap-2" on:click={() => onConfirmDelete(entry.name)}><TrashBinOutline size="sm" /> Delete</DropdownItem>
+				</Dropdown>
+			</div>
+			<div class="items-left flex flex-col">
+				<span class="pb-2 text-sm text-gray-500 dark:text-gray-400">
+					{#if entry.key}
+						<Badge color="green">Key</Badge>
+					{/if}
+					{#if entry.crt}
+						<Badge color="dark">CRT</Badge>
+					{/if}
+					{#if entry.csr}
+						<Badge color="indigo">CSR</Badge>
+					{/if}
+					{#if entry.crl}
+						<Badge color="yellow">CRL</Badge>
+					{/if}
+					{#if entry.ca}
+						<Badge>CA</Badge>
+					{/if}
+				</span>
+				<span class="pb-2 text-sm text-gray-500 dark:text-gray-400">
+					{entry.dn}
+				</span>
+				<span class="pb-2 text-sm text-gray-500 dark:text-gray-400">
+					Serial: {entry.serial}
+				</span>
+				{#if entry.crt}
+					<span class="pb-2 text-sm text-gray-500 dark:text-gray-400">
+						<Badge border color={expiryColor(new Date(entry.validTo))}
+							>Expires: {ui.dateTimeFormat.format(new Date(entry.validTo))}</Badge
+						>
+					</span>
+				{/if}
+			</div>
+		</Card>
+	{/each}
 </div>
-<EntryDetailsModal bind:details={entryDetails} bind:open={openDetails} />
+<Modal bind:open={confirmDeleteModal}>
+	<svelte:fragment slot="footer">
+		<Button on:click={onDelete}>Delete</Button>
+		<Button color="alternative" on:click={onCancelDelete}>Cancel</Button>
+	</svelte:fragment>
+</Modal>

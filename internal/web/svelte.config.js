@@ -13,7 +13,7 @@ export default {
 			strict: true
 		}),
 		prerender: {
-			entries: [ '/about', '/new', '/import', '/export/dummy' ]
+			entries: [ '/about', '/new', '/import', '/details/dummy', '/export/dummy' ]
 		},
 		paths: {
 			relative: true
