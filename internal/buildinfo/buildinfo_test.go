@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hdecarne-github/certmgr/internal/buildinfo"
+	"github.com/tdrn-org/certmgr/internal/buildinfo"
 	"github.com/stretchr/testify/require"
 )
 

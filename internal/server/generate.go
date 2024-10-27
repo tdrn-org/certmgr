@@ -11,9 +11,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hdecarne-github/go-certstore"
-	"github.com/hdecarne-github/go-certstore/certs"
-	"github.com/hdecarne-github/go-certstore/keys"
+	"github.com/tdrn-org/go-certstore"
+	"github.com/tdrn-org/go-certstore/certs"
+	"github.com/tdrn-org/go-certstore/keys"
 )
 
 func (server *serverInstance) generateLocal(c *gin.Context) {

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hdecarne-github/certmgr"
-	"github.com/hdecarne-github/certmgr/internal/config"
-	"github.com/hdecarne-github/go-certstore/storage"
+	"github.com/tdrn-org/certmgr"
+	"github.com/tdrn-org/certmgr/internal/config"
+	"github.com/tdrn-org/go-certstore/storage"
 	"github.com/stretchr/testify/require"
 )
 

@@ -1,4 +1,4 @@
-module github.com/hdecarne-github/certmgr
+module github.com/tdrn-org/certmgr
 
 go 1.23.2
 
@@ -53,9 +53,9 @@ require (
 	github.com/alecthomas/kong v1.2.1
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/gin-gonic/gin v1.10.0
-	github.com/hdecarne-github/go-certstore v0.0.9
-	github.com/hdecarne-github/go-log v0.1.2
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/tdrn-org/go-certstore v0.0.10
+	github.com/tdrn-org/go-log v0.1.3
 	gopkg.in/yaml.v3 v3.0.1
 )

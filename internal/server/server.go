@@ -17,10 +17,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hdecarne-github/certmgr/internal/config"
-	"github.com/hdecarne-github/certmgr/internal/web"
-	"github.com/hdecarne-github/go-certstore"
-	"github.com/hdecarne-github/go-log"
+	"github.com/tdrn-org/certmgr/internal/config"
+	"github.com/tdrn-org/certmgr/internal/web"
+	"github.com/tdrn-org/go-certstore"
+	"github.com/tdrn-org/go-log"
 	"github.com/rs/zerolog"
 )
 

@@ -9,9 +9,9 @@ import (
 	"fmt"
 	module "runtime/debug"
 
-	"github.com/hdecarne-github/certmgr/internal/buildinfo"
-	"github.com/hdecarne-github/certmgr/internal/config"
-	"github.com/hdecarne-github/certmgr/internal/server"
+	"github.com/tdrn-org/certmgr/internal/buildinfo"
+	"github.com/tdrn-org/certmgr/internal/config"
+	"github.com/tdrn-org/certmgr/internal/server"
 )
 
 func Run(runner config.Runner) error {

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hdecarne-github/go-certstore/certs/acme"
+	"github.com/tdrn-org/go-certstore/certs/acme"
 )
 
 func (server *serverInstance) loadACMEConfig() (*acme.Config, error) {

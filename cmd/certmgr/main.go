@@ -8,7 +8,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/hdecarne-github/certmgr"
+	"github.com/tdrn-org/certmgr"
 )
 
 func main() {

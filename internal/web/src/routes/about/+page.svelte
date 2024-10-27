@@ -44,6 +44,6 @@
 </P>
 <P class="px-8 py-4">
 	You should have received a copy of the license along with this program. If not, see online <A
-		href="https://raw.githubusercontent.com/hdecarne-github/certmgr/next/LICENSE">LICENSE</A
+		href="https://raw.githubusercontent.com/tdrn-org/certmgr/next/LICENSE">LICENSE</A
 	> file.
 </P>

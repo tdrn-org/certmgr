@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hdecarne-github/go-certstore/storage"
+	"github.com/tdrn-org/go-certstore/storage"
 )
 
 func (server *serverInstance) delete(c *gin.Context) {

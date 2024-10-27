@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 
 	"github.com/alecthomas/kong"
-	"github.com/hdecarne-github/go-certstore/storage"
-	"github.com/hdecarne-github/go-log"
+	"github.com/tdrn-org/go-certstore/storage"
+	"github.com/tdrn-org/go-log"
 	"github.com/rs/zerolog"
 	"gopkg.in/yaml.v3"
 )

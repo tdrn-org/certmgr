@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/hdecarne-github/certmgr/internal/buildinfo"
+	"github.com/tdrn-org/certmgr/internal/buildinfo"
 )
 
 func (server *serverInstance) about(c *gin.Context) {
